@@ -10,7 +10,7 @@ const connection = mysql.createConnection({
     //your mysql username
     user: 'root',
     //your password
-    password: 'Sallyandsadie1',
+    password: 'YourPasswordGoesHere',
     database: 'employeesDB'
 });
 
@@ -119,7 +119,7 @@ function viewEmployee() {
 }
 
 //view employees by department, opens list of departments to choose from
-function viewEmployeesByDepartment() {
+function viewEmployeeByDepartment() {
     console.log("View Employees By Department\n");
     var query =
         `Select d.id, d.name, r.salary AS budget
