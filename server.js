@@ -106,7 +106,30 @@ function viewEmployee() {
     connection.query(query, function(err, res) {
         if (err) throw err;
         console.table(res);
-        console.log("Employees Listed Above.\n");
+        console.log("Employees Listed Above!\n");
         firstPrompt();
+    });
+}
+
+//view employees by department
+function viewEmployeesByDepartment() {
+    console.log("View Employees By Department\n");
+    var query =
+        `Select d.id, d.name, r.salary AS budget
+        FROM employee e
+            LEFT JOIN role r
+                ON e.role_id = r.id
+            LEFT JOIN department d
+                ON d.id = r.department_id
+            GROUP BY d.id, d.name`
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        const departmentChoices = res.map(data => ({
+            value: data.id,
+            name: data.name
+        }));
+        console.table(res);
+        console.log("Departments Listed Above!\n");
+        promptDepartment(departmentChoices);
     });
 }
