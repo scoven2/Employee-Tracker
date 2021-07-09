@@ -72,13 +72,13 @@ function firstPrompt() {
                 case "View Employees By Department":
                     viewEmployeesByDepartment();
                     break;
-                case "Add Employees":
-                    addEmployees();
+                case "Add Employee":
+                    addEmployee();
                     break;
-                case "Remove Employees":
-                    removeEmployees();
+                case "Remove Employee":
+                    removeEmployee();
                     break;
-                case "Update Employees Role":
+                case "Update Employee's Role":
                     updateEmployeesRole();
                     break;
                 case "Add Role":
@@ -158,5 +158,61 @@ function promptDepartment(departmentChoices) {
                 console.table("response ", res);
                 console.log(res.affectedRows + " Employees Are Displayed Above!\n");
             });
+        });
+}
+
+//add emoloyee
+function addEmployee() {
+    console.log("Adding An Employee!")
+    var query =
+        `SELECT r.id, r.title, r.salary
+            FROM role r`
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        const roleChoices = res.map(({ id, title, salary }) => ({
+            value: id,
+            title: `${title}`,
+            salary: `${salary}`
+        }));
+        console.table(res);
+        console.log("Adding Employee!")
+        promptInsert(roleChoices);
+    });
+}
+
+function promptInsert(roleChoices) {
+    inquirer
+        .prompt([{
+                type: "input",
+                name: "first_name",
+                message: "Please Enter The Employee's First Name:"
+            },
+            {
+                type: "input",
+                name: "last_name",
+                message: "Please Enter The Employee's Last Name:"
+            },
+            {
+                type: "list",
+                name: "roleId",
+                message: "Please Choose The Employees Role ID:",
+                choices: roleChoices
+            },
+        ])
+        .then(function(answer) {
+            console.log(answer);
+            var query = `INSERT INTO employee SET ?`
+            connection.query(query, {
+                    first_name: answer.first_name,
+                    last_name: answer.last_name,
+                    role_id: answer.roleId,
+                    manager_id: answer.managerId
+                },
+                function(err, res) {
+                    if (err) throw err;
+                    console.table(res);
+                    console.log("New Employee Added Successfully\n");
+                    firstPrompt();
+                });
         });
 }
