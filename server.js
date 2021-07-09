@@ -216,3 +216,42 @@ function promptInsert(roleChoices) {
                 });
         });
 }
+
+//remove employee
+//pulls up list of employees
+function removeEmployee() {
+    console.log("Removing Employee!");
+    var query =
+        `SELECT e.id, e.first_name, e.last_name
+            FROM employee e`
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        const deleteEmployeeChoices = res.map(({ id, first_name, last_name }) => ({
+            value: id,
+            name: `${id} ${first_name} ${last_name}`
+        }));
+        console.table(res);
+        console.log("Removing Employee!\n");
+        promptDelete(deleteEmployeeChoices);
+    });
+}
+
+//removes employee when one is selected from list
+function promptDelete(deleteEmployeeChoices) {
+    inquirer
+        .prompt([{
+            type: "list",
+            name: "EmployeeId",
+            message: "Selected The Employee You Would Like To Remove:",
+            choice: deleteEmployeeChoices
+        }])
+        .then(function(answer) {
+            var query = `DELETE FROM employee WHERE?`;
+            connection.query(query, { id: answer.employeeId }, function(err, res) {
+                if (err) throw err;
+                console.table(res);
+                console.log("The Employee Has Been Successfully Deleted!");
+                firstPrompt();
+            });
+        });
+}
