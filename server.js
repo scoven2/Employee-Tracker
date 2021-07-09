@@ -49,17 +49,18 @@ connection.connect(function(err) {
 
 //asks what the user would like to do
 function firstPrompt() {
+
     inquirer
         .prompt({
             type: "list",
             name: "task",
-            message: "What Would You Like To Do?",
+            message: "Would you like to do?",
             choices: [
                 "View Employees",
-                "View Employees By Department",
-                "Add Employees",
+                "View Employees by Department",
+                "Add Employee",
                 "Remove Employees",
-                "Update Employees Role",
+                "Update Employee Role",
                 "Add Role",
                 "End"
             ]
@@ -69,21 +70,27 @@ function firstPrompt() {
                 case "View Employees":
                     viewEmployee();
                     break;
-                case "View Employees By Department":
-                    viewEmployeesByDepartment();
+
+                case "View Employees by Department":
+                    viewEmployeeByDepartment();
                     break;
+
                 case "Add Employee":
                     addEmployee();
                     break;
-                case "Remove Employee":
+
+                case "Remove Employees":
                     removeEmployee();
                     break;
-                case "Update Employee's Role":
-                    updateEmployeesRole();
+
+                case "Update Employee Role":
+                    updateEmployeeRole();
                     break;
+
                 case "Add Role":
                     addRole();
                     break;
+
                 case "End":
                     connection.end();
                     break;
@@ -156,7 +163,8 @@ function promptDepartment(departmentChoices) {
             connection.query(query, answer.departmentId, function(err, res) {
                 if (err) throw err;
                 console.table("response ", res);
-                console.log(res.affectedRows + " Employees Are Displayed Above!\n");
+                console.log("Employees Are Displayed Above!\n");
+                firstPrompt();
             });
         });
 }
@@ -241,16 +249,16 @@ function promptDelete(deleteEmployeeChoices) {
     inquirer
         .prompt([{
             type: "list",
-            name: "EmployeeId",
+            name: "employeeId",
             message: "Selected The Employee You Would Like To Remove:",
-            choice: deleteEmployeeChoices
+            choices: deleteEmployeeChoices
         }])
         .then(function(answer) {
             var query = `DELETE FROM employee WHERE?`;
             connection.query(query, { id: answer.employeeId }, function(err, res) {
                 if (err) throw err;
                 console.table(res);
-                console.log("The Employee Has Been Successfully Deleted!");
+                console.log("The Employee Has Been Successfully Deleted!\n");
                 firstPrompt();
             });
         });
@@ -258,7 +266,7 @@ function promptDelete(deleteEmployeeChoices) {
 
 //update employee's role
 //pull up employee list to choose
-function updateEmployeesRole() {
+function updateEmployeeRole() {
     employeeArray();
 }
 
@@ -317,7 +325,7 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
                 type: "list",
                 name: "roleId",
                 message: "Select The New Role:",
-                choices: rolechoies
+                choices: roleChoices
             },
         ])
         .then(function(answer) {
@@ -327,6 +335,7 @@ function promptEmployeeRole(employeeChoices, roleChoices) {
                     if (err) throw err;
                     console.table(res);
                     console.log("Employee's Role Has Been Successfully Updated!");
+                    firstPrompt();
                 });
         });
 }
