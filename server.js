@@ -1,5 +1,5 @@
 //required dependencies
-const inquirer = rquire("inquirer");
+const inquirer = require("inquirer");
 const mysql = require("mysql");
 require("console.table");
 
@@ -10,8 +10,8 @@ const connection = mysql.createConnection({
     //your mysql username
     user: 'root',
     //your password
-    password: 'EnterYourPassword',
-    database: 'employeeDB'
+    password: 'Sallyandsadie1',
+    database: 'employeesDB'
 });
 
 connection.connect(function(err) {
